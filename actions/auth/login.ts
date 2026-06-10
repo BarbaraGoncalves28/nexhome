@@ -14,7 +14,7 @@ type LoginData = {
 export async function loginUser(
   data: LoginData
 ) {
-  const user = await prisma.user.findUnique({
+  const user = await prisma.users.findUnique({
     where: {
       email: data.email,
     },

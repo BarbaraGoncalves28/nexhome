@@ -1,4 +1,6 @@
-import cloudinary from "./cloudinary";
+import type { UploadApiResponse } from "cloudinary";
+
+import { cloudinary } from "./cloudinary";
 
 export async function uploadImage(
   file: File
@@ -17,11 +19,26 @@ export async function uploadImage(
             folder: "nexhome",
           },
           (error, result) => {
-            if (error)
+            if (error) {
               return reject(error);
+            }
+
+            const uploadResult =
+              result as
+                | UploadApiResponse
+                | undefined;
+
+            if (!uploadResult) {
+              reject(
+                new Error(
+                  "Upload sem resposta"
+                )
+              );
+              return;
+            }
 
             resolve(
-              result!.secure_url
+              uploadResult.secure_url
             );
           }
         )

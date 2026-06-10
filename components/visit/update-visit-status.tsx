@@ -1,5 +1,7 @@
 "use client";
 
+import type { VisitStatus } from "@prisma/client";
+
 import { updateVisitStatus } from "@/actions/visit/update-visit-status";
 
 type Props = {
@@ -10,11 +12,11 @@ export function UpdateVisitStatus({
   visitId,
 }: Props) {
   async function handleChange(
-    status: string
+    status: VisitStatus
   ) {
     await updateVisitStatus(
       visitId,
-      status as any
+      status
     );
 
     window.location.reload();
@@ -24,7 +26,7 @@ export function UpdateVisitStatus({
     <select
       onChange={(e) =>
         handleChange(
-          e.target.value
+          e.target.value as VisitStatus
         )
       }
       className="rounded border p-2"

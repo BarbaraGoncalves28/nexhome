@@ -8,7 +8,7 @@ export async function generatePropertyPdf(
   propertyId: string
 ) {
   const property =
-    await prisma.property.findUnique({
+    await prisma.properties.findUnique({
       where: {
         id: propertyId,
       },
@@ -90,7 +90,7 @@ export async function generatePropertyPdf(
   );
 
   page.drawText(
-    `Garagem: ${property.garageSpots}`,
+    `Garagem: ${property.garage_spots}`,
     {
       x: 50,
       y: 530,

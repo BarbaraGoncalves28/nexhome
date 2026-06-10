@@ -1,6 +1,7 @@
 "use server";
 
 import { cookies } from "next/headers";
+import type { UploadApiResponse } from "cloudinary";
 
 import { prisma } from "@/lib/prisma";
 import { verifyToken } from "@/lib/auth";
@@ -63,7 +64,7 @@ export async function createProperty(
         Buffer.from(bytes);
 
       const result =
-        await new Promise<any>(
+        await new Promise<UploadApiResponse>(
           (
             resolve,
             reject
@@ -78,10 +79,21 @@ export async function createProperty(
                   error,
                   result
                 ) => {
-                  if (error)
+                  if (error) {
                     reject(
                       error
                     );
+                    return;
+                  }
+
+                  if (!result) {
+                    reject(
+                      new Error(
+                        "Upload sem resposta"
+                      )
+                    );
+                    return;
+                  }
 
                   resolve(
                     result
@@ -98,7 +110,7 @@ export async function createProperty(
     }
 
     const property =
-      await prisma.property.create({
+      await prisma.properties.create({
         data: {
           title:
             String(
@@ -140,7 +152,7 @@ export async function createProperty(
               )
             ),
 
-          garageSpots:
+          garage_spots:
             Number(
               formData.get(
                 "garageSpots"
@@ -167,7 +179,7 @@ export async function createProperty(
               )
             ),
 
-          propertyType:
+          property_type:
             formData.get(
               "propertyType"
             ) as
@@ -198,26 +210,21 @@ export async function createProperty(
                 )
               : null,
 
-          ownerId:
+          owner_id:
             user.userId,
         },
-      });
+      }); 
 
-    await prisma.propertyImage.createMany(
-      {
-        data:
-          uploadedImages.map(
-            (
-              imageUrl
-            ) => ({
-              imageUrl,
+    await prisma.property_images.createMany({
+  data: uploadedImages.map(
+    (imageUrl) => ({
+      image_url: imageUrl,
 
-              propertyId:
-                property.id,
-            })
-          ),
-      }
-    );
+      property_id:
+        property.id,
+    })
+  ),
+});
 
     return {
       success: true,

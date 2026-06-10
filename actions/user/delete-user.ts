@@ -43,7 +43,7 @@ export async function deleteUser(
   };
 }
 
-  await prisma.user.delete({
+  await prisma.users.delete({
     where: {
       id: userId,
     },

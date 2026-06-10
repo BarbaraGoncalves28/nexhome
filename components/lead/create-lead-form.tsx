@@ -9,9 +9,15 @@ type Props = {
 export function CreateLeadForm({
   propertyId,
 }: Props) {
+  async function handleSubmit(
+    formData: FormData
+  ) {
+    await createLead(formData);
+  }
+
   return (
     <form
-      action={createLead}
+      action={handleSubmit}
       className="space-y-4"
     >
       <input

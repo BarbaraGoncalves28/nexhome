@@ -17,7 +17,7 @@ export async function registerUser(
       registerSchema.parse(data);
 
     const existingUser =
-      await prisma.user.findUnique({
+      await prisma.users.findUnique({
         where: {
           email: parsedData.email,
         },
@@ -36,7 +36,7 @@ export async function registerUser(
         10
       );
 
-    await prisma.user.create({
+    await prisma.users.create({
       data: {
         name: parsedData.name,
         email: parsedData.email,

@@ -31,9 +31,9 @@ export async function getUsers() {
     );
   }
 
-  return prisma.user.findMany({
+  return prisma.users.findMany({
     orderBy: {
-      createdAt: "desc",
+      created_at: "desc",
     },
   });
 }

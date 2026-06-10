@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 
 export async function getPropertiesByCity() {
   const properties =
-    await prisma.property.groupBy({
+    await prisma.properties.groupBy({
       by: ["city"],
 
       _count: {

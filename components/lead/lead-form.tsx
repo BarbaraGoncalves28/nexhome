@@ -22,27 +22,12 @@ export function LeadForm({
   ) {
     setLoading(true);
 
-    await createLead({
-      name: String(
-        formData.get("name")
-      ),
+    formData.set(
+      "propertyId",
+      propertyId
+    );
 
-      email: String(
-        formData.get("email")
-      ),
-
-      phone: String(
-        formData.get("phone")
-      ),
-
-      message: String(
-        formData.get(
-          "message"
-        ) ?? ""
-      ),
-
-      propertyId,
-    });
+    await createLead(formData);
 
     setSuccess(true);
 

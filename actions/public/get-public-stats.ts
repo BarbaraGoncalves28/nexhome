@@ -8,15 +8,15 @@ export async function getPublicStats() {
     realtors,
     visits,
   ] = await Promise.all([
-    prisma.property.count(),
+    prisma.properties.count(),
 
-    prisma.user.count({
+    prisma.users.count({
       where: {
         role: "REALTOR",
       },
     }),
 
-    prisma.visit.count(),
+    prisma.visits.count(),
   ]);
 
   return {

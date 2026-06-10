@@ -52,11 +52,11 @@ export async function updateProperty(
         success: false,
         message:
           "Sessão inválida",
-      };
+      }; 
     }
 
     const property =
-      await prisma.property.findUnique({
+      await prisma.properties.findUnique({
         where: {
           id: data.id,
         },
@@ -84,7 +84,7 @@ export async function updateProperty(
     // REALTOR só pode editar imóveis dele
     if (
       user.role === "REALTOR" &&
-      property.ownerId !==
+      property.owner_id !==
         user.userId
     ) {
       return {
@@ -96,7 +96,7 @@ export async function updateProperty(
 
     // ADMIN pode editar qualquer imóvel
 
-    await prisma.property.update({
+    await prisma.properties.update({
       where: {
         id: data.id,
       },
@@ -117,7 +117,7 @@ export async function updateProperty(
         bathrooms:
           data.bathrooms,
 
-        garageSpots:
+        garage_spots:
           data.garageSpots,
 
         city: data.city,
@@ -128,7 +128,7 @@ export async function updateProperty(
         address:
           data.address,
 
-        propertyType:
+        property_type:
           data.propertyType,
       },
     });

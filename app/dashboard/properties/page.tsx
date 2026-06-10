@@ -1,9 +1,15 @@
 import Link from "next/link";
-
-import { DeletePropertyButton } from "@/components/property/delete-property-button";
-import { PropertyFilters } from "@/components/property/property-filters";
+import {
+  Building2,
+  Plus,
+  Search,
+} from "lucide-react";
 
 import { searchProperties } from "@/actions/property/search-properties";
+import { DeletePropertyButton } from "@/components/property/delete-property-button";
+import { PropertyCard } from "@/components/property/property-card";
+import { PropertyFilters } from "@/components/property/property-filters";
+import { formatNumber } from "@/lib/formatters";
 
 type Props = {
   searchParams: Promise<{
@@ -23,125 +29,101 @@ export default async function PropertiesPage(
 
   const properties =
     await searchProperties({
-      city:
-        searchParams.city,
-
+      city: searchParams.city,
       district:
         searchParams.district,
-
       propertyType:
         searchParams.propertyType,
-
       minPrice:
         searchParams.minPrice
-          ? Number(
-              searchParams.minPrice
-            )
+          ? Number(searchParams.minPrice)
           : undefined,
-
       maxPrice:
         searchParams.maxPrice
-          ? Number(
-              searchParams.maxPrice
-            )
+          ? Number(searchParams.maxPrice)
           : undefined,
     });
 
   return (
-    <main className="p-8">
-      <div className="mb-8 flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">
-            Imóveis
-          </h1>
+    <main className="space-y-8 p-4 sm:p-6 lg:p-8">
+      <section className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <p className="flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.18em] text-cyan-700">
+              <Building2 className="h-4 w-4" />
+              Gestão de imóveis
+            </p>
 
-          <p className="text-gray-500">
-            Gerencie os imóveis cadastrados
-          </p>
+            <h1 className="mt-3 text-3xl font-bold text-slate-950">
+              Portfólio cadastrado
+            </h1>
+
+            <p className="mt-2 text-slate-500">
+              Gerencie imóveis, corretores responsáveis e disponibilidade
+              comercial.
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <div className="rounded-lg bg-slate-100 px-4 py-3">
+              <p className="text-xs font-medium uppercase text-slate-500">
+                Resultado
+              </p>
+              <p className="text-xl font-bold text-slate-950">
+                {formatNumber(properties.length)}
+              </p>
+            </div>
+
+            <Link
+              href="/dashboard/properties/create"
+              className="inline-flex items-center justify-center gap-2 rounded-lg bg-slate-950 px-5 py-3 font-semibold text-white transition hover:bg-slate-800"
+            >
+              <Plus className="h-4 w-4" />
+              Novo Imóvel
+            </Link>
+          </div>
         </div>
+      </section>
 
-        <Link
-          href="/dashboard/properties/create"
-          className="rounded-lg bg-blue-600 px-5 py-3 text-white"
-        >
-          Novo Imóvel
-        </Link>
-      </div>
-
-      <PropertyFilters />
+      <PropertyFilters
+        defaultValues={searchParams}
+      />
 
       {properties.length === 0 ? (
-        <div className="rounded-xl border p-10 text-center">
-          Nenhum imóvel encontrado
+        <div className="rounded-lg border border-dashed border-slate-300 bg-white p-12 text-center">
+          <div className="mx-auto grid h-14 w-14 place-items-center rounded-lg bg-slate-100 text-slate-500">
+            <Search className="h-6 w-6" />
+          </div>
+
+          <h2 className="mt-5 text-xl font-semibold text-slate-950">
+            Nenhum imóvel encontrado
+          </h2>
+
+          <p className="mt-2 text-slate-500">
+            Ajuste os filtros ou cadastre uma nova oportunidade.
+          </p>
         </div>
       ) : (
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {properties.map(
-            (property) => (
-              <div
-                key={property.id}
-                className="overflow-hidden rounded-xl border bg-white shadow-sm"
-              >
-                <img
-                  src={
-                    property.images[0]
-                      ?.imageUrl ??
-                    "https://placehold.co/600x400"
-                  }
-                  alt={
-                    property.title
-                  }
-                  className="h-60 w-full object-cover"
-                />
+          {properties.map((property) => (
+            <PropertyCard
+              key={property.id}
+              property={property}
+              href={`/dashboard/properties/${property.id}/edit`}
+              manageActions={
+                <>
+                  <Link
+                    href={`/dashboard/properties/${property.id}/edit`}
+                    className="flex-1 rounded-lg bg-slate-950 px-4 py-2 text-center text-sm font-semibold text-white transition hover:bg-slate-800"
+                  >
+                    Editar
+                  </Link>
 
-                <div className="p-4">
-                  <h2 className="line-clamp-1 text-lg font-semibold">
-                    {
-                      property.title
-                    }
-                  </h2>
-
-                  <p className="mt-2 text-sm text-gray-500">
-                    {property.city} •{" "}
-                    {property.district}
-                  </p>
-
-                  <p className="mt-2 text-sm text-gray-500">
-                    Corretor: {property.owner.name}
-                  </p>
-
-                  <p className="mt-3 text-xl font-bold text-green-600">
-                    {Number(
-                      property.price
-                    ).toLocaleString(
-                      "pt-BR",
-                      {
-                        style:
-                          "currency",
-                        currency:
-                          "BRL",
-                      }
-                    )}
-                  </p>
-
-                  <div className="mt-4 flex gap-2">
-                    <Link
-                      href={`/dashboard/properties/${property.id}/edit`}
-                      className="rounded bg-slate-900 px-4 py-2 text-sm text-white"
-                    >
-                      Editar
-                    </Link>
-
-                    <DeletePropertyButton
-                      propertyId={
-                        property.id
-                      }
-                    />
-                  </div>
-                </div>
-              </div>
-            )
-          )}
+                  <DeletePropertyButton propertyId={property.id} />
+                </>
+              }
+            />
+          ))}
         </div>
       )}
     </main>

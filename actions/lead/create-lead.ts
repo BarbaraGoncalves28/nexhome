@@ -7,7 +7,29 @@ export async function createLead(
   formData: FormData
 ) {
   try {
-    await prisma.lead.create({
+    const propertyId = String(
+      formData.get("propertyId")
+    );
+
+    const property =
+      await prisma.properties.findUnique({
+        where: {
+          id: propertyId,
+        },
+        select: {
+          ownerId: true,
+          title: true,
+        },
+      });
+
+    if (!property) {
+      return {
+        success: false,
+      };
+    }
+
+    const lead =
+      await prisma.leads.create({
       data: {
         name: String(
           formData.get("name")
@@ -25,19 +47,15 @@ export async function createLead(
           formData.get("message")
         ),
 
-        propertyId: String(
-          formData.get(
-            "propertyId"
-          )
-        ),
+        propertyId,
       },
     });
 
     await createNotification(
-  property.ownerId,
-  "Novo Lead",
-  `${lead.name} demonstrou interesse em ${property.title}`
-);
+      property.ownerId,
+      "Novo Lead",
+      `${lead.name} demonstrou interesse em ${property.title}`
+    );
 
     return {
       success: true,

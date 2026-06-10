@@ -3,31 +3,23 @@
 import { prisma } from "@/lib/prisma";
 
 export async function getFinancialMetrics() {
-  const properties =
-    await prisma.property.findMany({
-      select: {
+  const metrics =
+    await prisma.properties.aggregate({
+      _sum: {
+        price: true,
+      },
+
+      _avg: {
         price: true,
       },
     });
 
-  const totalValue =
-    properties.reduce(
-      (acc, property) =>
-        acc +
-        Number(
-          property.price
-        ),
-      0
-    );
-
-  const averagePrice =
-    properties.length > 0
-      ? totalValue /
-        properties.length
-      : 0;
-
   return {
-    totalValue,
-    averagePrice,
+    totalValue: Number(
+      metrics._sum.price ?? 0
+    ),
+    averagePrice: Number(
+      metrics._avg.price ?? 0
+    ),
   };
 }

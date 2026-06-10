@@ -50,7 +50,7 @@ export async function updateUserRole(
   };
 }
 
-  await prisma.user.update({
+  await prisma.users.update({
     where: {
       id: userId,
     },

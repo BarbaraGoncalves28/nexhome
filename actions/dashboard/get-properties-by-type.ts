@@ -4,22 +4,22 @@ import { prisma } from "@/lib/prisma";
 
 export async function getPropertiesByType() {
   const properties =
-    await prisma.property.groupBy({
-      by: ["propertyType"],
+    await prisma.properties.groupBy({
+      by: ["property_type"],
 
       _count: {
-        propertyType: true,
+        property_type: true,
       },
     });
 
   return properties.map(
     (property) => ({
       type:
-        property.propertyType,
+        property.property_type,
 
       total:
         property._count
-          .propertyType,
+          .property_type,
     })
   );
 }

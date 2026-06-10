@@ -1,12 +1,19 @@
 "use client";
 
 import { useState } from "react";
+import type { properties } from "@prisma/client";
 
 import { updateProperty } from "@/actions/property/update-property";
 
+type EditableProperty = properties;
+
+type Props = {
+  property: EditableProperty;
+};
+
 export default function EditPropertyForm({
   property,
-}: any) {
+}: Props) {
   const [loading, setLoading] =
     useState(false);
 
@@ -77,7 +84,11 @@ export default function EditPropertyForm({
         propertyType:
           formData.get(
             "propertyType"
-          ) as any,
+          ) as
+          | "HOUSE"
+          | "APARTMENT"
+          | "LAND"
+          | "COMMERCIAL", 
       });
 
     setLoading(false);
@@ -97,96 +108,72 @@ export default function EditPropertyForm({
       >
         <input
           name="title"
-          defaultValue={
-            property.title
-          }
+          defaultValue={property.title}
           className="w-full rounded border p-3"
         />
 
         <textarea
           name="description"
-          defaultValue={
-            property.description
-          }
+          defaultValue={property.description}
           className="w-full rounded border p-3"
         />
 
         <input
           name="price"
           type="number"
-          defaultValue={
-            Number(
-              property.price
-            )
-          }
+          defaultValue={Number(property.price)}
           className="w-full rounded border p-3"
         />
 
         <input
           name="area"
           type="number"
-          defaultValue={
-            property.area
-          }
+          defaultValue={property.area}
           className="w-full rounded border p-3"
         />
 
         <input
           name="bedrooms"
           type="number"
-          defaultValue={
-            property.bedrooms
-          }
+          defaultValue={property.bedrooms}
           className="w-full rounded border p-3"
         />
 
         <input
           name="bathrooms"
           type="number"
-          defaultValue={
-            property.bathrooms
-          }
+          defaultValue={property.bathrooms}
           className="w-full rounded border p-3"
         />
 
         <input
           name="garageSpots"
           type="number"
-          defaultValue={
-            property.garageSpots
-          }
+          defaultValue={property.garage_spots}
           className="w-full rounded border p-3"
         />
 
         <input
           name="city"
-          defaultValue={
-            property.city
-          }
+          defaultValue={property.city}
           className="w-full rounded border p-3"
         />
 
         <input
           name="district"
-          defaultValue={
-            property.district
-          }
+          defaultValue={property.district}
           className="w-full rounded border p-3"
         />
 
         <input
           name="address"
-          defaultValue={
-            property.address
-          }
+          defaultValue={property.address}
           className="w-full rounded border p-3"
         />
 
         <select
           name="propertyType"
-          defaultValue={
-            property.propertyType
-          }
+          defaultValue={property.property_type}
           className="w-full rounded border p-3"
         >
           <option value="HOUSE">

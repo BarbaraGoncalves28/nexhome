@@ -3,13 +3,13 @@
 import { prisma } from "@/lib/prisma";
 
 export async function getProperties() {
-  return prisma.property.findMany({
+  return prisma.properties.findMany({
     include: {
-      images: true,
+      property_images: true,
     },
 
     orderBy: {
-      createdAt: "desc",
+      created_at: "desc",
     },
   });
 }

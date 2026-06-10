@@ -37,7 +37,7 @@ export async function deleteProperty(
     }
 
     const property =
-      await prisma.property.findUnique({
+      await prisma.properties.findUnique({
         where: {
           id: propertyId,
         },
@@ -65,7 +65,7 @@ export async function deleteProperty(
     // REALTOR só pode excluir imóveis dele
     if (
       user.role === "REALTOR" &&
-      property.ownerId !==
+      property.owner_id !==
         user.userId
     ) {
       return {
@@ -77,7 +77,7 @@ export async function deleteProperty(
 
     // ADMIN pode excluir qualquer imóvel
 
-    await prisma.property.delete({
+    await prisma.properties.delete({
       where: {
         id: propertyId,
       },

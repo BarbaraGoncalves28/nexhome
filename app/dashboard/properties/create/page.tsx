@@ -1,6 +1,14 @@
 import { createProperty } from "@/actions/property/create-property";
 
 export default function CreatePropertyPage() {
+  async function handleCreateProperty(
+    formData: FormData
+  ) {
+    "use server";
+
+    await createProperty(formData);
+  }
+
   return (
     <main className="mx-auto max-w-4xl p-8">
       <div className="mb-8">
@@ -14,7 +22,7 @@ export default function CreatePropertyPage() {
       </div>
 
       <form
-        action={createProperty}
+        action={handleCreateProperty}
         className="space-y-6 rounded-xl border bg-white p-6 shadow-sm"
       >
         <div>

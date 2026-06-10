@@ -11,12 +11,31 @@ type SearchParams = {
   minBedrooms?: number;
   minBathrooms?: number;
   realtorId?: string;
+  orderBy?: "newest" | "price-asc" | "price-desc";
+  take?: number;
+  skip?: number;
 };
 
 export async function searchProperties(
   filters: SearchParams
 ) {
-  return prisma.property.findMany({
+  const propertyType = filters.propertyType;
+
+  const orderBy =
+    filters.orderBy === "price-asc"
+      ? {
+          price: "asc" as const,
+        }
+      : filters.orderBy ===
+          "price-desc"
+        ? {
+            price: "desc" as const,
+          }
+        : {
+            createdAt: "desc" as const,
+          };
+
+  return prisma.properties.findMany({
     where: {
       city: filters.city
         ? {
@@ -37,13 +56,10 @@ export async function searchProperties(
             }
           : undefined,
 
-      propertyType:
-        filters.propertyType
-          ? (filters.propertyType as any)
-          : undefined,
+      property_type: propertyType,
 
-          ownerId:
-            filters.realtorId,
+      ownerId:
+        filters.realtorId,
 
       price: {
         gte:
@@ -70,13 +86,42 @@ export async function searchProperties(
           : undefined,
     },
 
-    include: {
-      images: true,
-      owner: true,
+    select: {
+      id: true,
+      title: true,
+      price: true,
+      area: true,
+      bedrooms: true,
+      bathrooms: true,
+      garageSpots: true,
+      city: true,
+      district: true,
+      propertyType: true,
+      images: {
+        select: {
+          imageUrl: true,
+        },
+        take: 1,
+      },
+      owner: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+        },
+      },
+      _count: {
+        select: {
+          favorites: true,
+          visits: true,
+          leads: true,
+        },
+      },
     },
 
-    orderBy: {
-      createdAt: "desc",
-    },
+    orderBy,
+
+    take: filters.take,
+    skip: filters.skip,
   });
 }

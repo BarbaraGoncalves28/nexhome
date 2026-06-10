@@ -3,12 +3,15 @@
 import { prisma } from "@/lib/prisma";
 
 export async function getRealtors() {
-  return prisma.user.findMany({
+  return prisma.users.findMany({
     where: {
       role: "REALTOR",
     },
 
-    include: {
+    select: {
+      id: true,
+      name: true,
+      email: true,
       _count: {
         select: {
           properties: true,

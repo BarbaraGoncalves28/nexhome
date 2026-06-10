@@ -3,8 +3,17 @@
 import { prisma } from "@/lib/prisma";
 import type { PropertyType } from "@prisma/client";
 
-export async function getFeaturedProperties() {
+export async function getRelatedProperties(propertyId: string) {
   const properties = await prisma.properties.findMany({
+    where: {
+      id: {
+        not: propertyId,
+      },
+    },
+    take: 6,
+    orderBy: {
+      created_at: "desc",
+    },
     select: {
       id: true,
       title: true,
@@ -21,14 +30,8 @@ export async function getFeaturedProperties() {
         select: {
           image_url: true,
         },
-        take: 1,
+        take: 5,
       },
-    },
-
-    take: 6,
-
-    orderBy: {
-      created_at: "desc",
     },
   });
 
@@ -44,9 +47,10 @@ export async function getFeaturedProperties() {
 
     propertyType: p.property_type as PropertyType,
 
+    // ✅ CORREÇÃO IMPORTANTE
     images: p.property_images.map((img) => ({
-      imageUrl: img.image_url,
-    })),
+  imageUrl: img.image_url,
+})),
 
     city: p.city,
     district: p.district,

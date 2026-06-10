@@ -40,13 +40,13 @@ export async function createVisit(
     }
 
     const property =
-      await prisma.property.findUnique({
+      await prisma.properties.findUnique({
         where: {
           id: propertyId,
         },
 
         include: {
-          owner: true,
+          users: true,
         },
       });
 
@@ -59,41 +59,41 @@ export async function createVisit(
     }
 
     const visit =
-      await prisma.visit.create({
+      await prisma.visits.create({
         data: {
-          propertyId,
+          property_id: propertyId,
 
-          userId:
+          user_id:
             user.userId,
 
-          visitDate,
+          visit_date: visitDate,
 
           notes,
         },
       });
 
       await createNotification(
-  property.ownerId,
+  property.owner_id,
   "Nova Visita",
   `Uma visita foi agendada para ${property.title}`
 );
 
     const client =
-      await prisma.user.findUnique({
+      await prisma.users.findUnique({
         where: {
           id: user.userId,
         },
       });
 
     if (
-      property.owner.email
+      property.users.email
     ) {
       await resend.emails.send({
         from:
           "NexHome <onboarding@resend.dev>",
 
         to:
-          property.owner.email,
+          property.users.email,
 
         subject:
           "Nova visita agendada",
