@@ -25,13 +25,13 @@ export async function getLeads() {
   }
 
   if (user.role === "ADMIN") {
-    return prisma.lead.findMany({
+    return prisma.leads.findMany({
       include: {
-        property: true,
+        properties: true,
       },
 
       orderBy: {
-        createdAt: "desc",
+        created_at: "desc",
       },
     });
   }
@@ -39,20 +39,20 @@ export async function getLeads() {
   if (
     user.role === "REALTOR"
   ) {
-    return prisma.lead.findMany({
+    return prisma.leads.findMany({
       where: {
-        property: {
-          ownerId:
+        properties: {
+          owner_id:
             user.userId,
         },
       },
 
       include: {
-        property: true,
+        properties: true,
       },
 
       orderBy: {
-        createdAt: "desc",
+        created_at: "desc",
       },
     });
   }

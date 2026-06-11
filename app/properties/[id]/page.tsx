@@ -55,9 +55,10 @@ export default async function PropertyDetailsPage(
   }
 
   const mainImage =
-    property.property_images[0]?.image_url;
-  const galleryImages =
-    property.property_images.slice(1, 5);
+  property.property_images[0]?.image_url;
+
+const galleryImages =
+  property.property_images.slice(1, 5);
 
   return (
     <main className="bg-slate-50">

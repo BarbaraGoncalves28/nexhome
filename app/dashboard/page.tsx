@@ -25,6 +25,7 @@ import {
   formatNumber,
   formatPercent,
 } from "@/lib/formatters";
+import Image from "next/image";
 
 export default async function DashboardPage() {
   const [
@@ -179,13 +180,15 @@ export default async function DashboardPage() {
                   key={property.id}
                   className="flex items-center gap-4 rounded-lg border border-slate-100 p-3"
                 >
-                  {property.images[0]?.imageUrl ? (
-                    <img
-                      src={property.images[0].imageUrl}
-                      alt={property.title}
-                      className="h-16 w-16 rounded-lg object-cover"
-                    />
-                  ) : (
+                  {property.property_images[0]?.image_url ? (
+  <Image
+  src={property.property_images[0].image_url}
+  alt={property.title}
+  width={64}
+  height={64}
+  className="h-16 w-16 rounded-lg object-cover"
+/>
+) : (
                     <div className="grid h-16 w-16 place-items-center rounded-lg bg-slate-100 text-slate-400">
                       <Building2 className="h-6 w-6" />
                     </div>
@@ -225,10 +228,10 @@ export default async function DashboardPage() {
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <p className="font-medium text-slate-950">
-                        {visit.user.name}
+                        {visit.users.name}
                       </p>
                       <p className="text-sm text-slate-500">
-                        {visit.property.title}
+                        {visit.properties.title}
                       </p>
                     </div>
 
@@ -239,7 +242,7 @@ export default async function DashboardPage() {
 
                   <p className="mt-3 flex items-center gap-1 text-sm text-slate-500">
                     <ArrowUpRight className="h-4 w-4" />
-                    {visit.visitDate.toLocaleDateString("pt-BR")}
+                    {visit.visit_date.toLocaleDateString("pt-BR")}
                   </p>
                 </div>
               ))

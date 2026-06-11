@@ -45,7 +45,7 @@ export async function getFeaturedProperties() {
     propertyType: p.property_type as PropertyType,
 
     images: p.property_images.map((img) => ({
-      imageUrl: img.image_url,
+      image_url: img.image_url,
     })),
 
     city: p.city,

@@ -1,4 +1,5 @@
 import { getMyFavorites } from "@/actions/favorite/get-my-favorites";
+import Image from "next/image";
 
 export default async function FavoritesPage() {
   const favorites =
@@ -17,26 +18,28 @@ export default async function FavoritesPage() {
               key={favorite.id}
               className="overflow-hidden rounded-xl border"
             >
-              <img
-                src={
-                  favorite
-                    .property
-                    .images[0]
-                    ?.imageUrl
-                }
-                alt={
-                  favorite
-                    .property
-                    .title
-                }
-                className="h-56 w-full object-cover"
-              />
+              <Image
+  src={
+    favorite
+      .properties
+      .property_images[0]
+      ?.image_url || "/placeholder.jpg"
+  }
+  alt={
+    favorite
+      .properties
+      .title
+  }
+  width={600}
+  height={400}
+  className="h-56 w-full object-cover"
+/>
 
               <div className="p-4">
                 <h2 className="font-semibold">
                   {
                     favorite
-                      .property
+                      .properties
                       .title
                   }
                 </h2>
@@ -44,7 +47,7 @@ export default async function FavoritesPage() {
                 <p className="text-sm text-gray-500">
                   {
                     favorite
-                      .property
+                      .properties
                       .city
                   }
                 </p>

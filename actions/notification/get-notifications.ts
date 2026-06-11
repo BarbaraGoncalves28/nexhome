@@ -31,7 +31,7 @@ export async function getNotifications() {
     },
 
     orderBy: {
-      createdAt: "desc",
+      created_at: "desc",
     },
 
     take: 20,

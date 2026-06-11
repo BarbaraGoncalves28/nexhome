@@ -32,7 +32,7 @@ export async function searchProperties(
             price: "desc" as const,
           }
         : {
-            createdAt: "desc" as const,
+            created_at: "desc" as const,
           };
 
   return prisma.properties.findMany({
@@ -58,15 +58,15 @@ export async function searchProperties(
 
       property_type: propertyType,
 
-      ownerId:
+      owner_id:
         filters.realtorId,
 
       price: {
         gte:
-          filters.minPrice,
+          filters.minPrice ?? undefined,
 
         lte:
-          filters.maxPrice,
+          filters.maxPrice ?? undefined,
       },
 
       bedrooms:
@@ -93,17 +93,17 @@ export async function searchProperties(
       area: true,
       bedrooms: true,
       bathrooms: true,
-      garageSpots: true,
+      garage_spots: true,
       city: true,
       district: true,
-      propertyType: true,
-      images: {
+      property_type: true,
+      property_images: {
         select: {
-          imageUrl: true,
+          image_url: true,
         },
         take: 1,
       },
-      owner: {
+      users: {
         select: {
           id: true,
           name: true,

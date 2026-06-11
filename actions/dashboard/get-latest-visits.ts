@@ -3,20 +3,22 @@
 import { prisma } from "@/lib/prisma";
 
 export async function getLatestVisits() {
-  return prisma.visit.findMany({
+  return prisma.visits.findMany({
     select: {
       id: true,
       status: true,
-      visitDate: true,
-      createdAt: true,
-      property: {
+      visit_date: true,
+      created_at: true,
+
+      properties: {
         select: {
           id: true,
           title: true,
           city: true,
         },
       },
-      user: {
+
+      users: {
         select: {
           id: true,
           name: true,
@@ -27,7 +29,7 @@ export async function getLatestVisits() {
     take: 5,
 
     orderBy: {
-      createdAt: "desc",
+      created_at: "desc",
     },
   });
 }

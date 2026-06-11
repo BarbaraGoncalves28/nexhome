@@ -155,7 +155,7 @@ export async function createProperty(
           garage_spots:
             Number(
               formData.get(
-                "garageSpots"
+                "garage_spots"
               )
             ),
 
@@ -181,7 +181,7 @@ export async function createProperty(
 
           property_type:
             formData.get(
-              "propertyType"
+              "property_type"
             ) as
               | "HOUSE"
               | "APARTMENT"
@@ -217,8 +217,8 @@ export async function createProperty(
 
     await prisma.property_images.createMany({
   data: uploadedImages.map(
-    (imageUrl) => ({
-      image_url: imageUrl,
+    (image_url) => ({
+      image_url,
 
       property_id:
         property.id,

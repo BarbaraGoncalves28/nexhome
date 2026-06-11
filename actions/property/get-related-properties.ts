@@ -10,10 +10,13 @@ export async function getRelatedProperties(propertyId: string) {
         not: propertyId,
       },
     },
+
     take: 6,
+
     orderBy: {
       created_at: "desc",
     },
+
     select: {
       id: true,
       title: true,
@@ -43,14 +46,13 @@ export async function getRelatedProperties(propertyId: string) {
     bedrooms: p.bedrooms,
     bathrooms: p.bathrooms,
 
-    garageSpots: p.garage_spots,
+    garage_spots: p.garage_spots,
 
-    propertyType: p.property_type as PropertyType,
+    property_type:
+      p.property_type as PropertyType,
 
-    // ✅ CORREÇÃO IMPORTANTE
-    images: p.property_images.map((img) => ({
-  imageUrl: img.image_url,
-})),
+    property_images:
+      p.property_images,
 
     city: p.city,
     district: p.district,

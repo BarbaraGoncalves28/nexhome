@@ -17,7 +17,7 @@ export async function getPublicProperties() {
       property_type: true,
       images: {
         select: {
-          imageUrl: true,
+          image_url: true,
         },
         take: 1,
       },

@@ -23,14 +23,14 @@ type PropertyCardData = {
   area: number;
   bedrooms: number;
   bathrooms: number;
-  garageSpots: number;
+  garage_spots: number;
   city: string;
   district: string;
-  propertyType: PropertyType;
-  images: {
-    imageUrl: string;
+  property_type: PropertyType;
+  property_images: {
+    image_url: string; 
   }[];
-  owner?: {
+  users?: {
     name: string;
   };
   _count?: {
@@ -52,7 +52,7 @@ export function PropertyCard({
   manageActions,
 }: Props) {
   const image =
-    property.images[0]?.imageUrl;
+  property.property_images[0]?.image_url;
 
   return (
     <article className="group overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:border-slate-300 hover:shadow-xl">
@@ -74,7 +74,7 @@ export function PropertyCard({
           )}
 
           <div className="absolute left-3 top-3 rounded-full bg-white/95 px-3 py-1 text-xs font-semibold text-slate-800 shadow-sm">
-            {propertyTypeLabels[property.propertyType]}
+            {propertyTypeLabels[property.property_type]}
           </div>
 
           <div className="absolute right-3 top-3 flex gap-2">
@@ -119,15 +119,15 @@ export function PropertyCard({
 
             <span className="flex items-center gap-1">
               <Car className="h-4 w-4" />
-              {property.garageSpots}
+              {property.garage_spots}
             </span>
           </div>
 
-          {property.owner ? (
+          {property.users ? (
             <p className="text-sm text-slate-500">
               Corretor:{" "}
               <span className="font-medium text-slate-700">
-                {property.owner.name}
+                {property.users.name}
               </span>
             </p>
           ) : null}

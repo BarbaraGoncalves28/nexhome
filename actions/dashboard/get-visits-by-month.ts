@@ -4,9 +4,9 @@ import { prisma } from "@/lib/prisma";
 
 export async function getVisitsByMonth() {
   const visits =
-    await prisma.visit.findMany({
+    await prisma.visits.findMany({
       select: {
-        visitDate: true,
+        visit_date: true,
       },
     });
 
@@ -14,7 +14,7 @@ export async function getVisitsByMonth() {
     visits.reduce(
       (acc, visit) => {
         const month =
-          visit.visitDate.toLocaleDateString(
+          visit.visit_date.toLocaleDateString(
             "pt-BR",
             {
               month:

@@ -24,16 +24,16 @@ export async function getMyFavorites() {
     return [];
   }
 
-  return prisma.favorite.findMany({
+  return prisma.favorites.findMany({
     where: {
-      userId:
+      user_id:
         user.userId,
     },
 
     include: {
-      property: {
+      properties: {
         include: {
-          images: true,
+          property_images: true,
         },
       },
     },
