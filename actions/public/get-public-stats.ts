@@ -12,7 +12,7 @@ export async function getPublicStats() {
 
     prisma.users.count({
       where: {
-        role: "REALTOR",
+        role: "BROKER",
       },
     }),
 

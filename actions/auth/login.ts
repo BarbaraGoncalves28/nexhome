@@ -6,58 +6,73 @@ import { cookies } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { generateToken } from "@/lib/auth";
 
-type LoginData = {
+export async function loginUser({
+  email,
+  password,
+}: {
   email: string;
   password: string;
-};
-
-export async function loginUser(
-  data: LoginData
-) {
-  const user = await prisma.users.findUnique({
-    where: {
-      email: data.email,
-    },
-  });
+}) {
+  const user =
+    await prisma.users.findUnique({
+      where: {
+        email,
+      },
+    });
 
   if (!user) {
     return {
       success: false,
-      message: "E-mail ou senha inválidos",
+      message:
+        "Usuário não encontrado",
     };
   }
 
   const passwordMatch =
     await bcrypt.compare(
-      data.password,
+      password,
       user.password
     );
 
   if (!passwordMatch) {
     return {
       success: false,
-      message: "E-mail ou senha inválidos",
+      message:
+        "Senha incorreta",
     };
   }
 
-  const token = generateToken({
-    userId: user.id,
-    email: user.email,
-    role: user.role,
-  });
+  const token =
+    generateToken({
+      userId: user.id,
+      email: user.email,
+      role: user.role as
+        | "ADMIN"
+        | "BROKER"
+        | "CLIENT",
+    });
 
-  const cookieStore = await cookies();
+  const cookieStore =
+    await cookies();
 
-  cookieStore.set("token", token, {
-    httpOnly: true,
-    secure:
-      process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    maxAge: 60 * 60 * 24 * 7,
-    path: "/",
-  });
+  cookieStore.set(
+    "auth_token",
+    token,
+    {
+      httpOnly: true,
+      secure:
+        process.env.NODE_ENV ===
+        "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge:
+        60 * 60 * 24 * 7,
+    }
+  );
 
   return {
     success: true,
+    message:
+      "Login realizado com sucesso",
   };
 }

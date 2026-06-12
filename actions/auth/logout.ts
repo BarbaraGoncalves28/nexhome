@@ -6,5 +6,11 @@ export async function logoutUser() {
   const cookieStore =
     await cookies();
 
-  cookieStore.delete("token");
+  cookieStore.delete(
+    "auth_token"
+  );
+
+  return {
+    success: true,
+  };
 }

@@ -63,7 +63,7 @@ const [
   prisma.users.count(),
   prisma.users.count({
     where: {
-      role: "REALTOR",
+      role: "BROKER",
     },
   }),
   prisma.users.count({

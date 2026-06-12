@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 export async function getRealtors() {
   return prisma.users.findMany({
     where: {
-      role: "REALTOR",
+      role: "BROKER",
     },
 
     select: {

@@ -8,85 +8,171 @@ datasource db {
 }
 
 model favorites {
-  id          String     @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  user_id     String     @db.Uuid
-  property_id String     @db.Uuid
-  created_at  DateTime?  @default(now()) @db.Timestamp(6)
-  properties  properties @relation(fields: [property_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_favorite_property")
-  users       users      @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_favorite_user")
+  id          String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user_id     String    @db.Uuid
+  property_id String    @db.Uuid
+  created_at  DateTime? @default(now()) @db.Timestamp(6)
 
-  @@unique([user_id, property_id], map: "unique_favorite")
+  properties properties @relation(fields: [property_id], references: [id], onDelete: Cascade)
+  users      users      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id, property_id])
 }
 
 model leads {
   id          String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name        String      @db.VarChar(255)
-  email       String      @db.VarChar(255)
-  phone       String      @db.VarChar(255)
+  name        String
+  email       String
+  phone       String
   message     String?
   status      lead_status @default(NEW)
   property_id String      @db.Uuid
-  created_at  DateTime    @default(now()) @db.Timestamp(6)
-  properties  properties  @relation(fields: [property_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_property")
+  created_at  DateTime    @default(now())
+
+  properties properties @relation(fields: [property_id], references: [id], onDelete: Cascade)
 }
 
 model properties {
-  id              String            @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  title           String            @db.VarChar(200)
-  description     String
-  price           Decimal           @db.Decimal(12, 2)
-  area            Int
-  bedrooms        Int
-  bathrooms       Int
-  garage_spots    Int
-  city            String            @db.VarChar(100)
-  district        String            @db.VarChar(100)
-  address         String
-  property_type   String            @db.VarChar(20)
-  status          String            @default("AVAILABLE") @db.VarChar(20)
-  owner_id        String            @db.Uuid
-  created_at      DateTime?         @default(now()) @db.Timestamp(6)
-  updated_at      DateTime?         @default(now()) @db.Timestamp(6)
-  latitude        Decimal?          @db.Decimal(10, 8)
-  longitude       Decimal?          @db.Decimal(11, 8)
+  id            String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  title         String
+  description   String
+  price         Decimal
+  area          Int
+  bedrooms      Int
+  bathrooms     Int
+  garage_spots  Int
+  city          String
+  district      String
+  address       String
+  property_type String
+  status        String    @default("AVAILABLE")
+  owner_id      String    @db.Uuid
+  created_at    DateTime? @default(now())
+  updated_at    DateTime? @default(now())
+  latitude      Decimal?
+  longitude     Decimal?
+
   favorites       favorites[]
   leads           leads[]
-  users           users             @relation(fields: [owner_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_owner")
   property_images property_images[]
   visits          visits[]
+
+  users users @relation(fields: [owner_id], references: [id], onDelete: Cascade)
 }
 
 model property_images {
-  id          String     @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id          String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   image_url   String
-  property_id String     @db.Uuid
-  created_at  DateTime?  @default(now()) @db.Timestamp(6)
-  properties  properties @relation(fields: [property_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_property")
+  property_id String    @db.Uuid
+  created_at  DateTime? @default(now())
+
+  properties properties @relation(fields: [property_id], references: [id], onDelete: Cascade)
+}
+
+model conversations {
+  id String @id @default(uuid()) @db.Uuid
+
+  client_id  String @db.Uuid
+  realtor_id String @db.Uuid
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  client  users @relation("client_conversations", fields: [client_id], references: [id], onDelete: Cascade)
+  realtor users @relation("realtor_conversations", fields: [realtor_id], references: [id], onDelete: Cascade)
+
+  messages messages[]
+
+  @@unique([client_id, realtor_id])
+}
+
+model messages {
+  id      String @id @default(uuid()) @db.Uuid
+  content String
+
+  sender_id       String @db.Uuid
+  conversation_id String @db.Uuid
+
+  is_read    Boolean  @default(false)
+  created_at DateTime @default(now())
+
+  sender       users         @relation(fields: [sender_id], references: [id], onDelete: Cascade)
+  conversation conversations @relation(fields: [conversation_id], references: [id], onDelete: Cascade)
 }
 
 model users {
-  id         String       @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  name       String       @db.VarChar(120)
-  email      String       @unique @db.VarChar(150)
-  password   String
-  role       String       @default("CLIENT") @db.VarChar(20)
-  created_at DateTime?    @default(now()) @db.Timestamp(6)
-  updated_at DateTime?    @default(now()) @db.Timestamp(6)
+  id String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+
+  name     String
+  email    String @unique
+  password String
+
+  role UserRole @default(CLIENT)
+
+  email_verified Boolean @default(false)
+
+  created_at DateTime? @default(now())
+  updated_at DateTime? @updatedAt
+
   favorites  favorites[]
   properties properties[]
   visits     visits[]
+
+  client_conversations  conversations[] @relation("client_conversations")
+  realtor_conversations conversations[] @relation("realtor_conversations")
+
+  messages messages[]
+
+  refresh_tokens RefreshToken[]
+}
+
+model EmailVerificationToken {
+  id String @id @default(uuid()) @db.Uuid
+
+  email String
+  token String @unique
+
+  expires_at DateTime
+
+  created_at DateTime @default(now())
+}
+
+model PasswordResetToken {
+  id String @id @default(uuid()) @db.Uuid
+
+  email String
+  token String @unique
+
+  expires_at DateTime
+
+  created_at DateTime @default(now())
+}
+
+model RefreshToken {
+  id String @id @default(uuid()) @db.Uuid
+
+  token String @unique
+
+  user_id String @db.Uuid
+
+  expires_at DateTime
+
+  created_at DateTime @default(now())
+
+  user users @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }
 
 model visits {
-  id          String     @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  visit_date  DateTime   @db.Timestamp(6)
+  id          String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  visit_date  DateTime
   notes       String?
-  status      String     @default("PENDING") @db.VarChar(20)
-  user_id     String     @db.Uuid
-  property_id String     @db.Uuid
-  created_at  DateTime?  @default(now()) @db.Timestamp(6)
-  properties  properties @relation(fields: [property_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_visit_property")
-  users       users      @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_visit_user")
+  status      String    @default("PENDING")
+  user_id     String    @db.Uuid
+  property_id String    @db.Uuid
+  created_at  DateTime? @default(now())
+
+  properties properties @relation(fields: [property_id], references: [id], onDelete: Cascade)
+  users      users      @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }
 
 enum PropertyType {
@@ -101,4 +187,10 @@ enum lead_status {
   CONTACTED
   NEGOTIATING
   CLOSED
+}
+
+enum UserRole {
+  ADMIN
+  BROKER
+  CLIENT
 }

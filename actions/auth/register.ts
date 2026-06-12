@@ -48,10 +48,12 @@ export async function registerUser(
       success: true,
       message: "Usuário cadastrado com sucesso",
     };
-  } catch {
-    return {
-      success: false,
-      message: "Erro ao cadastrar usuário",
-    };
-  }
+  } catch (error) {
+  console.error("ERRO NO CADASTRO:", error);
+
+  return {
+    success: false,
+    message: "Erro ao cadastrar usuário",
+  };
+ }
 }

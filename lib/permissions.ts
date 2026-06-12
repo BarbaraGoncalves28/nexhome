@@ -7,7 +7,7 @@ export function isAdmin(
 export function isRealtor(
   role: string
 ) {
-  return role === "REALTOR";
+  return role === "BROKER";
 }
 
 export function isClient(

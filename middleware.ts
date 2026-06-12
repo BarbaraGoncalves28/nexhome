@@ -5,25 +5,29 @@ export function middleware(
   request: NextRequest
 ) {
   const token =
-    request.cookies.get("token");
+    request.cookies.get(
+      "auth_token"
+    )?.value;
+
+  const pathname =
+    request.nextUrl.pathname;
 
   const isAuthPage =
-    request.nextUrl.pathname.startsWith(
-      "/login"
-    ) ||
-    request.nextUrl.pathname.startsWith(
-      "/register"
-    );
+    pathname.startsWith("/login") ||
+    pathname.startsWith("/register");
 
-  if (
-    !token &&
-    !isAuthPage
-  ) {
+  if (!token && !isAuthPage) {
     return NextResponse.redirect(
       new URL(
         "/login",
         request.url
       )
+    );
+  }
+
+  if (token && isAuthPage) {
+    return NextResponse.redirect(
+      new URL("/", request.url)
     );
   }
 
@@ -33,5 +37,6 @@ export function middleware(
 export const config = {
   matcher: [
     "/dashboard/:path*",
+    "/profile/:path*",
   ],
 };
